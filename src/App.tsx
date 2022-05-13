@@ -1,9 +1,16 @@
 import React from "react";
+import { autorun } from "mobx";
 import { observer } from "mobx-react";
 import store from "./store";
 
 const App: React.FC = observer(() => {
-  const { countClass, countObject } = store;
+  const { countClass, countObject, doubleClass } = store;
+
+  autorun(() => {
+    if (doubleClass.double === 10) {
+      doubleClass.value = 0;
+    }
+  });
 
   return (
     <div>
@@ -18,6 +25,11 @@ const App: React.FC = observer(() => {
         <div>number: {countObject.number}</div>
         <button onClick={() => countObject.decrease()}>-</button>
         <button onClick={() => countObject.increase()}>+</button>
+      </div>
+      <div>
+        <h1>Computed</h1>
+        <div>double: {doubleClass.value}</div>
+        <button onClick={() => doubleClass.increment()}>+</button>
       </div>
     </div>
   );
