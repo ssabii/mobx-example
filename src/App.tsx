@@ -1,16 +1,31 @@
-import React from "react";
-import { autorun } from "mobx";
+import React, { useEffect } from "react";
+import { autorun, reaction } from "mobx";
 import { observer } from "mobx-react";
 import store from "./store";
 
 const App: React.FC = observer(() => {
-  const { countClass, countObject, doubleClass } = store;
+  const { countClass, countObject, doubleClass, animalClass } = store;
 
   autorun(() => {
     if (doubleClass.double === 10) {
       doubleClass.value = 0;
     }
   });
+
+  reaction(
+    () => animalClass.isHungry,
+    (isHungry) => {
+      if (isHungry) console.log("Now I'm hungry!");
+      else console.log("I'm not hungry!");
+      console.log("Energy level:", animalClass.energyLevel);
+    }
+  );
+
+  useEffect(() => {
+    for (let i = 0; i < 10; i++) {
+      animalClass.reduceEnergy();
+    }
+  }, [animalClass]);
 
   return (
     <div>
